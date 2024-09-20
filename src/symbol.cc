@@ -1,5 +1,6 @@
 #include "symbol.h"
 
+
 Symbol::Symbol(char recieved) {
   symbol_ = recieved;
 }

@@ -1,9 +1,10 @@
 #include "chain.h"
+const char kSpace = ' ';
 std::stringstream output;
 Chain::Chain(const std::string& input) {
   std::string auxiliar; // used to introduce the alphabet
   for (unsigned i{input.size() - 1}; i >= 0; --i) {
-    if (input[i] == ' ') {
+    if (input[i] == kSpace) {
       break;
     }
     std::cout << "Simbolo: " << input[i] << std::endl;
@@ -13,7 +14,7 @@ Chain::Chain(const std::string& input) {
   alphabet_ = Alphabet(auxiliar);
   // create the alphabet object with the auxiliar string
   auxiliar.clear();
-  for (int i{0}; input[i] != ' '; ++i) {
+  for (int i{0}; input[i] != kSpace; ++i) {
     auxiliar += input[i];
   }
   for (unsigned i{0}; i < auxiliar.size(); ++i) {
