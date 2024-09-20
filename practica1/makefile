@@ -1,4 +1,4 @@
-p01_chainCC=g++ -std=c++20
+p01_stringsCC=g++ -std=c++20
 CFLAGS=-O0 -g -Wall
 DEPS = alphabet.h chain.h symbol.h 
 OBJ = main.o
@@ -6,7 +6,7 @@ OBJ = main.o
 SRC = './src/'
 
 compilar:
-	g++ $(CFLAGS) $(SRC)*.cc -o p01_chain
+	g++ $(CFLAGS) $(SRC)*.cc -o p01_strings
 
 
 %.o: %.cc $(DEPS)
