@@ -21,11 +21,11 @@ Alphabet::Alphabet(const std::string& input) {
     alphabet_.insert(Symbol(input[i]));
   }
 
-  // Imprime el alfabeto generado
-  for (auto symbol_alphabet : alphabet_) {
-    std::cout << symbol_alphabet.getSymbol() << " ";
-  }
-  std::cout << "\n";
+  // // Imprime el alfabeto generado
+  // for (auto symbol_alphabet : alphabet_) {
+  //   std::cout << symbol_alphabet.getSymbol() << " ";
+  // }
+  // std::cout << "\n";
 }
 /**
  * @brief Imprime el alfabeto en un formato de conjunto, separando los 

@@ -9,6 +9,8 @@
 // Archivo chain.cc: contiene la implementación de la clase Chain.
 #include "chain.h"
 const char kSpace = ' ';
+const char kVoid_chain = '&';
+const std::string kVoid_chain_string{"&"};
 std::stringstream output;
 
 /**
@@ -20,34 +22,59 @@ std::stringstream output;
  */
 Chain::Chain(const std::string& input) {
   std::string auxiliar; // usado para construir el alfabeto
-  for (unsigned i{input.size() - 1}; i >= 0; --i) {
-    if (input[i] == kSpace) {
-      break;
-    }
-    std::cout << "Simbolo: " << input[i] << std::endl;
-    auxiliar += input[i];
-  }
-  std::cout << auxiliar.size() << std::endl;
-  alphabet_ = Alphabet(auxiliar);  // crea el objeto alfabeto con la cadena auxiliar
-  auxiliar.clear();
-
-  // Separa la cadena del alfabeto en la entrada
-  for (int i{0}; input[i] != kSpace; ++i) {
-    auxiliar += input[i];
-  }
-  // Compara cada símbolo con el alfabeto y lo inserta en la cadena
-  for (unsigned i{0}; i < auxiliar.size(); ++i) {
-    std::set<Symbol>::iterator compared = 
-      alphabet_.getAlphabet().find(Symbol(auxiliar[i]));
-    
-    if (Symbol(auxiliar[i]) == *compared) { 
-      chain_.push_back(Symbol(auxiliar[i]));
+  std::vector<std::string> input_divided;
+  for (ulong i{0}; i < input.size() - 1; ++i) {
+    if (input[i] != kSpace) {
+      auxiliar.push_back(input[i]);
     } else {
-      std::cerr << "El simbolo " << auxiliar[i] <<
-      " no pertenece al alfabeto" << std::endl;
+      input_divided.push_back(auxiliar);
+      auxiliar.clear();
+    }
+  }
+  input_divided.push_back(auxiliar);
+  auxiliar.clear();
+  if (input_divided.size() == 1) { // solo está el alfabeto
+    void_chain_ = true;
+  }
+  if (void_chain_ == true) {
+    if (input[0] == kVoid_chain) {
+      std::cerr << "El alfabeto no puede ser vacío" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    alphabet_ = Alphabet(input);
+    chain_.push_back(Symbol(kVoid_chain));
+  } else {
+    for (ulong i{input.size() - 1}; i >= 0; --i) {
+      if (input[i] == kSpace) {
+        break;
+      }
+      auxiliar += input[i];
+    }
+    alphabet_ = Alphabet(auxiliar);
+    // crea el objeto alfabeto con la cadena auxiliar
+    auxiliar.clear();
+    
+    // Separa la cadena del alfabeto en la entrada
+    for (int i{0}; input[i] != kSpace; ++i) {
+    auxiliar += input[i];
+    }
+    // Compara cada símbolo con el alfabeto y lo inserta en la cadena
+    for (unsigned i{0}; i < auxiliar.size(); ++i) {
+      std::set<Symbol>::iterator compared = 
+        alphabet_.getAlphabet().find(Symbol(auxiliar[i]));
+      
+      if (Symbol(auxiliar[i]) == *compared || Symbol(auxiliar[i]) == Symbol(kVoid_chain)) {
+        chain_.push_back(Symbol(auxiliar[i]));
+        if (Symbol(auxiliar[i]) == Symbol(kVoid_chain)) {void_chain_ = true;}
+      } else {
+        std::cerr << "El simbolo " << auxiliar[i] <<
+        " no pertenece al alfabeto" << std::endl;
+        exit(EXIT_FAILURE);
+      }
     }
   }
 }
+  
 /**
  * @brief Sobrecarga del operador de inserción para imprimir la cadena.
  * 
@@ -95,7 +122,7 @@ std::stringstream Chain::Size() {
 std::stringstream Chain::Reverse() {
   std::stringstream output;
   // Recorre la cadena desde el final hasta el principio
-  for (int i = chain_.size() - 1; i >= 0; --i) {
+  for (ulong i = chain_.size() - 1; i >= 0; --i) {
     output << chain_[i].getSymbol() << " ";
   }
   output << std::endl;
@@ -110,15 +137,19 @@ std::stringstream Chain::Reverse() {
 std::stringstream Chain::Prefixes() {
   std::stringstream output;
   output << "{";
-  output << "&, ";  // El primer prefijo es el vacío
-  for (int i = 0; i < chain_.size(); ++i) {
-    // Recorre desde el primer elemento hasta el i-ésimo elemento
-    for (int j = 0; j <= i; ++j) {
-      output << chain_[j].getSymbol();
+  if (void_chain_ == false) {
+    output << "&, ";  // El primer prefijo es el vacío
+    for (ulong i = 0; i < chain_.size(); ++i) {
+      // Recorre desde el primer elemento hasta el i-ésimo elemento
+      for (ulong j = 0; j <= i; ++j) {
+        output << chain_[j].getSymbol();
+      }
+      if (i != chain_.size() - 1) {
+        output << ", ";
+      }
     }
-    if (i != chain_.size() - 1) {
-      output << ", ";
-    }
+  } else {
+    output << "&";
   }
   output << "}" << std::endl;
   return output;
@@ -133,15 +164,19 @@ std::stringstream Chain::Prefixes() {
 std::stringstream Chain::Sufixes() {
   std::stringstream output;
   output << "{";
-  output << "&, ";  // El primer sufijo es el vacío
-  for (int i = chain_.size() - 1; i >= 0; --i) {
-    // Recorre desde el último elemento hasta el i-ésimo
-    for (int j = i; j < chain_.size(); ++j) {
-      output << chain_[j].getSymbol();
+  if (void_chain_ == false) {
+    output << "&, ";  // El primer sufijo es el vacío
+    for (int i = chain_.size() - 1; i >= 0; --i) {
+      // Recorre desde el último elemento hasta el i-ésimo
+      for (int j = i; j < chain_.size(); ++j) {
+        output << chain_[j].getSymbol();
+      }
+      if (i != 0) {  // Evita la coma en el último elemento
+        output << ", ";
+      }
     }
-    if (i != 0) {  // Evita la coma en el último elemento
-      output << ", ";
-    }
+  } else {
+    output << "&";
   }
   output << "}" << std::endl;
   return output;

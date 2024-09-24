@@ -33,6 +33,7 @@ class Chain {
 
   private:
     std::vector<Symbol> chain_;  // Vector of strings
-    Alphabet alphabet_;  // Alphabet object used to create the chain  
+    Alphabet alphabet_;  // Alphabet object used to create the chain
+    bool void_chain_ = false;
 };
 #endif  // End of chain_h

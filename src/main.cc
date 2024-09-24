@@ -32,7 +32,18 @@
  */
 int main(int argc, char* argv[]) {
   if (argc != 4) {
-    std::cerr << "Uso: " << argv[0] << " <chain>" << std::endl;
+    std::string help{argv[1]};
+    if (help == "--help") {
+      std::cerr << "Uso: ./p01_chain inputfile outputfile opcode\n";
+      std::cerr << "Opcode: " << std::endl;
+      std::cerr << "- 1: Imprimir el alfabeto." << std::endl;
+      std::cerr << "- 2: Imprimir el tamaño de la cadena." << std::endl;
+      std::cerr << "- 3: Imprimir la cadena en orden inverso." << std::endl;
+      std::cerr << "- 4: Imprimir los prefijos de la cadena." << std::endl;
+      std::cerr << "- 5: Imprimir los sufijos de la cadena." << std::endl;                    
+      return 1;
+    }
+    std::cerr << "Uso incorrecto. Para mostrar uso introduzca --help" << std::endl;
     return 1;
   }
   int opcode = std::stoi(argv[3]);
@@ -46,10 +57,10 @@ int main(int argc, char* argv[]) {
       for (unsigned i = 0; i < auxiliar.size(); ++i) { 
         input += auxiliar[i]; // Introduce the line in the input string
       }
-      std::cout << input << std::endl;
+      // std::cout << input << std::endl;
       Chain chain(input); // Create a chain object
-      std::cout << chain;
-      std::cout << "\n";
+      // std::cout << chain;
+      // std::cout << "\n";
       switch (opcode)
       {
       case 1:
